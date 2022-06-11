@@ -18,7 +18,8 @@ set(test_sources
         source/unit_tests_custom_types.cpp
         source/unit_tests_floating_point.cpp
         source/unit_tests_format_spec.cpp
-        source/unit_tests_positional_args.cpp)
+        source/unit_tests_positional_args.cpp
+        source/test_usf_translation_array.cpp)
 
 add_executable(USFTest test_main.cpp ${test_sources})
 

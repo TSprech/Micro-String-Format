@@ -12,6 +12,7 @@
 #include <tuple>
 
 #include "usf_locales_territories.hpp"
+#include "eternalAdapted.hpp"
 
 using namespace std::string_view_literals;
 
@@ -57,6 +58,14 @@ namespace usf {
       .numbers = {.symbols = {.decimal = u8"."sv, .group = u8","sv, .list = u8";"sv, .percent_sign = u8"%"sv, .plus_sign = u8"+"sv, .minus_sign = u8"-"sv, .exponential = u8"E"sv, .superscripting_exponent = u8"×"sv, .per_mille = u8"‰"sv, .infinity = u8"∞"sv, .nan = u8"NaN"sv, .time_separator = u8":"sv}}};
 
   using locale_t = Locale;
+
+  constexpr inline auto Translate(std::span<const std::u8string_view> translations) {
+    return translations;
+  }
+
+  constexpr inline auto Translate(std::span<const std::u8string_view> translations, locale_t loc) -> std::u8string_view {
+    return translations[static_cast<uint16_t>(loc.identity.language)];
+  }
 }  // namespace usf
 
 #endif

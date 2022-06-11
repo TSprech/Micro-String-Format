@@ -192,9 +192,9 @@ namespace eternal {
 
     template <typename Compare, typename Iterator, typename Key>
     constexpr auto bound(Iterator left, Iterator right, const Key& key) noexcept {
-      std::size_t count = right - left;
+      auto count = right - left;
       while (count > 0) {
-        const std::size_t step = count / 2;
+        const auto step = count / 2;
         right = left + step;
         if (Compare()(*right, key)) {
           left = ++right;

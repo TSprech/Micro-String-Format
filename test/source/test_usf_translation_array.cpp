@@ -31,19 +31,21 @@ TEST(USF, TranslationArray) {
   std::array<char8_t, 256> str{};
   usf::format_to(str, ja_JP, u8"{}", ExampleData_map[u8"Hello"]);
   EXPECT_STREQ(reinterpret_cast<const char*>(str.data()), reinterpret_cast<const char*>(u8"こんにちは"));
-  usf::format_to(str, da_DK, u8"{:t}", ExampleData_map[u8"Hello"]);
+  usf::format_to(str, da_DK, u8"{:t}", _(ExampleData_map[u8"Hello"]));
   EXPECT_STREQ(reinterpret_cast<const char*>(str.data()), reinterpret_cast<const char*>(u8"Halløj"));
-  usf::format_to(str, en_US, u8"{}", ExampleData_map[u8"Hello"]);
+  usf::format_to(str, en_US, u8"{}", _(ExampleData_map[u8"Hello"]));
   EXPECT_STREQ(reinterpret_cast<const char*>(str.data()), reinterpret_cast<const char*>(u8"Hello"));
   usf::format_to(str, es_ES, u8"{:t}", ExampleData_map[u8"Hello"]);
   EXPECT_STREQ(reinterpret_cast<const char*>(str.data()), reinterpret_cast<const char*>(u8"¿Qué tal?"));
 
-  usf::format_to(str, es_ES, u8"{}", ExampleData_map[u8"Goodbye"]);
+  usf::format_to(str, es_ES, u8"{}", _(ExampleData_map[u8"Goodbye"]));
   EXPECT_STREQ(reinterpret_cast<const char*>(str.data()), reinterpret_cast<const char*>(u8"Adiós"));
   usf::format_to(str, en_US, u8"{:t}", ExampleData_map[u8"Goodbye"]);
   EXPECT_STREQ(reinterpret_cast<const char*>(str.data()), reinterpret_cast<const char*>(u8"Goodbye"));
-  usf::format_to(str, da_DK, u8"{}", ExampleData_map[u8"Goodbye"]);
+  usf::format_to(str, da_DK, u8"{}", _(ExampleData_map[u8"Goodbye"]));
   EXPECT_STREQ(reinterpret_cast<const char*>(str.data()), reinterpret_cast<const char*>(u8"Farvel"));
   usf::format_to(str, ja_JP, u8"{:t}", ExampleData_map[u8"Goodbye"]);
   EXPECT_STREQ(reinterpret_cast<const char*>(str.data()), reinterpret_cast<const char*>(u8"さようなら"));
+
+  EXPECT_STREQ(reinterpret_cast<const char*>(_(ExampleData_map[u8"Goodbye"], ja_JP).data()), reinterpret_cast<const char*>(u8"さようなら"));
 }

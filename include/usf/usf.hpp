@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 // @file    usf.hpp
 // @brief   usflib single header auto generated file.
-// @date    07 June 2022
+// @date    10 June 2022
 // ----------------------------------------------------------------------------
 //
 // μSF - Micro String Format  - https://github.com/hparracho/usflib
@@ -73,6 +73,9 @@
 
 // Configuration of locale support
 // #define USF_DISABLE_LOCALE_SUPPORT
+
+// Configures the translation function as the typical gettext _ representation
+ #define _ usf::Translate
 
 // ----------------------------------------------------------------------------
 // Compiler version detection
@@ -363,26 +366,18 @@ namespace usf {
       .identity = {
           .revision = 41,
           .language = Languages::en,
-          .territory = Territories::US
-      },
-    .numbers = {
-      .symbols = {
-          .decimal = u8"."sv,
-          .group = u8","sv,
-          .list = u8";"sv,
-          .percent_sign = u8"%"sv,
-          .plus_sign = u8"+"sv,
-          .minus_sign = u8"-"sv,
-          .exponential = u8"E"sv,
-          .superscripting_exponent = u8"×"sv,
-          .per_mille = u8"‰"sv,
-          .infinity = u8"∞"sv,
-          .nan = u8"NaN"sv,
-          .time_separator = u8":"sv}
-    }
-};
+          .territory = Territories::US},
+      .numbers = {.symbols = {.decimal = u8"."sv, .group = u8","sv, .list = u8";"sv, .percent_sign = u8"%"sv, .plus_sign = u8"+"sv, .minus_sign = u8"-"sv, .exponential = u8"E"sv, .superscripting_exponent = u8"×"sv, .per_mille = u8"‰"sv, .infinity = u8"∞"sv, .nan = u8"NaN"sv, .time_separator = u8":"sv}}};
 
-using locale_t = Locale;
+  using locale_t = Locale;
+
+  constexpr inline auto Translate(std::u8string_view key) -> std::u8string_view {
+    return key;
+  }
+
+  constexpr inline auto Translate(std::span<std::u8string_view> translations, locale_t loc) -> std::u8string_view {
+    return translations[static_cast<uint16_t>(loc.identity.language)];
+  }
 }  // namespace usf
 
 #endif
@@ -1663,13 +1658,13 @@ namespace usf {
 
         if (std::isnan(value)) {
 //          format_string(it, end, format, format.uppercase() ? "NAN" : "nan", 3);
-          format_string(it, end, format, locale.numbers.symbols.nan.data(), locale.numbers.symbols.nan.length());
+          format_string(it, end, format, locale.numbers.symbols.nan.data(), static_cast<int>(locale.numbers.symbols.nan.length()));
         } else {
           const bool negative = std::signbit(value);
 
           if (std::isinf(value)) {
 //            format_string(it, end, format, format.uppercase() ? "INF" : "inf", 3, negative);
-            format_string(it, end, format, locale.numbers.symbols.infinity.data(), locale.numbers.symbols.infinity.length(), negative);
+            format_string(it, end, format, locale.numbers.symbols.infinity.data(), static_cast<int>(locale.numbers.symbols.infinity.length()), negative);
           } else {
             if (negative) { value = -value; }
 
@@ -1727,7 +1722,7 @@ namespace usf {
                   fill_after = format.write_alignment(it, end, full_digits, negative);
 
                   *it++ = '0';
-                  *it++ = static_cast<char>(locale.numbers.symbols.decimal[0]); // TODO: A better way to do this
+                  format_string(it, end, locale.numbers.symbols.decimal.data(), static_cast<int>(locale.numbers.symbols.decimal.size()));
 
                   int zero_digits = -exponent - 1;
                   CharTraits::assign(it, '0', zero_digits);
@@ -1749,7 +1744,7 @@ namespace usf {
                     CharTraits::assign(it, '0', ipart_digits - significand_size);
 
                     if (precision > 0 || format.hash()) {
-                      *it++ = static_cast<char>(locale.numbers.symbols.decimal[0]);
+                      format_string(it, end, locale.numbers.symbols.decimal.data(), static_cast<int>(locale.numbers.symbols.decimal.size()));
                     }
 
                     if (precision > 0) {
@@ -1759,7 +1754,7 @@ namespace usf {
                     // SIGNIFICAND[0:x].SIGNIFICAND[x:N]<0>
 
                     CharTraits::copy(it, significand, ipart_digits);
-                    *it++ = static_cast<char>(locale.numbers.symbols.decimal[0]);
+                    format_string(it, end, locale.numbers.symbols.decimal.data(), static_cast<int>(locale.numbers.symbols.decimal.size()));
 
                     const int copy_size = significand_size - ipart_digits;
                     CharTraits::copy(it, significand + ipart_digits, copy_size);
@@ -1780,7 +1775,7 @@ namespace usf {
                 *it++ = *significand;
 
                 if (precision > 0 || format.hash()) {
-                  *it++ = static_cast<char>(locale.numbers.symbols.decimal[0]);
+                  format_string(it, end, locale.numbers.symbols.decimal.data(), static_cast<int>(locale.numbers.symbols.decimal.size()));
 
                   const int copy_size = significand_size - 1;
                   CharTraits::copy(it, significand + 1, copy_size);
@@ -1897,6 +1892,13 @@ namespace usf {
 
         CharTraits::copy(it, str, str_length);
         CharTraits::assign(it, format.fill_char(), fill_after);
+      }
+
+      template <typename CharSrc,
+                typename std::enable_if<std::is_convertible<CharSrc, CharT>::value, bool>::type = true>
+      static constexpr void format_string(iterator &it, const_iterator end, const CharSrc *str, const int str_length) {
+        assert(it + str_length < end); // TODO: This entire function
+        CharTraits::copy(it, str, str_length);
       }
 
       // --------------------------------------------------------------------

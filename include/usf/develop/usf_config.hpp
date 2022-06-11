@@ -38,6 +38,9 @@
 // Configuration of locale support
 // #define USF_DISABLE_LOCALE_SUPPORT
 
+// Configures the translation function as the typical gettext _ representation
+ #define _ usf::Translate
+
 // ----------------------------------------------------------------------------
 // Compiler version detection
 // ----------------------------------------------------------------------------
