@@ -13,6 +13,7 @@ using namespace std::literals::string_view_literals;
 #else
 // clang-format off
 #include "usf/develop/usf_config.hpp"
+#include "usf/develop/usf_locales_territories.hpp"
 #include "usf/develop/usf_locale.hpp"
 #include "usf/develop/usf_traits.hpp"
 #include "usf/develop/usf_integer.hpp"

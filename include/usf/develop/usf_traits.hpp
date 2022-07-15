@@ -32,18 +32,18 @@ namespace usf::internal {
     * @param count The number of sequential fill characters to write.
     */
     template <typename CharDst, typename CharSrc, typename std::enable_if<std::is_convertible<CharSrc, CharDst>::value, bool>::type = true>
-    USF_ALWAYS_INLINE static constexpr void assign(CharDst *&dst, CharSrc ch, std::ptrdiff_t count) noexcept {
+    inline static constexpr void assign(CharDst *&dst, CharSrc ch, std::ptrdiff_t count) noexcept {
       while ((count--) > 0) { *dst++ = static_cast<CharDst>(ch); }
     }
 
     template <typename CharDst, typename CharSrc,
               typename std::enable_if<std::is_convertible<CharSrc, CharDst>::value, bool>::type = true>
-    USF_ALWAYS_INLINE static constexpr void copy(CharDst *&dst, const CharSrc *src, std::ptrdiff_t count) noexcept {
+    inline static constexpr void copy(CharDst *&dst, const CharSrc *src, std::ptrdiff_t count) noexcept {
       while ((count--) > 0) { *dst++ = static_cast<CharDst>(*src++); }
     }
 
     template <typename CharT>
-    USF_ALWAYS_INLINE static constexpr std::ptrdiff_t length(const CharT *str) noexcept {
+    inline static constexpr std::ptrdiff_t length(const CharT *str) noexcept {
       const CharT *str_begin = str;
 
       while (*str != CharT{}) { ++str; }

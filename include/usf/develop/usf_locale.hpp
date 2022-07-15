@@ -11,9 +11,6 @@
 #include <string_view>
 #include <tuple>
 
-#include "usf_locales_territories.hpp"
-#include "eternalAdapted.hpp"
-
 using namespace std::string_view_literals;
 
 namespace usf {
@@ -50,7 +47,7 @@ namespace usf {
     Numbers numbers;
   };
 
-  constexpr Locale c_locale{
+  constexpr inline Locale c_locale{
       .identity = {
           .revision = 41,
           .language = Languages::en,

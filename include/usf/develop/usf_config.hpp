@@ -19,6 +19,7 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <memory_resource>
 
 // ----------------------------------------------------------------------------
 // usflib configuration options
@@ -39,7 +40,9 @@
 // #define USF_DISABLE_LOCALE_SUPPORT
 
 // Configures the translation function as the typical gettext _ representation
- #define _ usf::Translate
+ #define _tr(key, arr) usf::Translate(arr[key])
+ #define _tl(key, arr, loc) usf::Translate(arr[key], loc)
+ #define _t(data, nothing) data;
 
 // ----------------------------------------------------------------------------
 // Compiler version detection
@@ -140,9 +143,7 @@ with the -std=c++11 or -std=gnu++11 compiler options.
 #endif
 
 // char8_t support (C++20 only)
-#if defined(__cpp_lib_char8_t) && (__cpp_lib_char8_t >= 201811L)
 #define USF_CPP20_CHAR8_T_SUPPORT
-#endif
 
 // ----------------------------------------------------------------------------
 // Target detection (maybe not the best way of doing it...)
@@ -187,7 +188,7 @@ int __builtin_clzll(uint64_t value) {
 namespace usf {
 namespace internal {
   template <typename Except>
-  [[noreturn]] USF_ALWAYS_INLINE constexpr void throw_exception(const char* const msg) {
+  [[noreturn]] inline constexpr void throw_exception(const char* const msg) {
     static_assert(std::is_convertible<Except, std::exception>::value,
                   "usf::throw_exception(): exception type should inherit from std::exception.");
 
