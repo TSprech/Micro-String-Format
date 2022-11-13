@@ -171,10 +171,10 @@ namespace usf {
 //    return basic_format_to(str, fmt, args...);
 //  }
 
-//  template <typename... Args>
-//  constexpr inline std::span<char8_t> format_to(std::span<char8_t> str, locale_t locale, std::u8string_view fmt, Args &&...args) {
-//    return basic_format_to(str, locale, fmt, args...);
-//  }
+  template <typename... Args>
+  constexpr inline std::span<char8_t> format_to(std::span<char8_t> str, locale_t locale, std::u8string_view fmt, Args &&...args) {
+    return basic_format_to(str, locale, fmt, args...);
+  }
 
   template <typename... Args>
   constexpr inline std::span<char8_t> format_to(std::span<char8_t> str, std::u8string_view fmt, Args &&...args) {
